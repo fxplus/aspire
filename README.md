@@ -1,6 +1,6 @@
 #Talis Aspire Integration for Moodle (1.9)
 
-##Original version created at the University of Sussex by [Stuart Lamour](https://github.com/stuartlamour/talisaspire)
+**Original version created at the University of Sussex by [Stuart Lamour](https://github.com/stuartlamour/talisaspire)**
 
 This plugin adds an activity resource type to Moodle that allows users with the appropriate permissions to pick a reading list from the associated course in [Talis Aspire](http://talisaspire.com/) which is then displayed within the content of the course, linking each resource to it's description in Aspire.
 
