@@ -14,7 +14,7 @@ The Talis Aspire product allows lecturers to create resource lists using a simpl
 
 All of this is a useful way of working for staff, but the default moodle integration for student view simply provides a block within moodle. The block displays a list of reading lists associated with the course code. This is appropriate for some institutions, but in other circumstances a significant amount of work may have gone into consolidating the student experience within the VLE, and sending students off into another product, with it's own cognitive burden for familiarisation, and a switch in language etc, may conceivably be disruptive.
 
-University of Sussex created this plugin partly as feedback to Talis and other interested parties, an alternate deeper model for integration.
+University of Sussex created the prototype for this plugin partly as feedback to Talis and other interested parties, an alternate deeper model for integration.
 
 ##Potential disadvantages
 
@@ -22,4 +22,4 @@ Talis have not as yet exposed a full or mature API to support this type of integ
 
 This is obviously not ideal, because it is a relatively intensive operation and, in the initial implementation at least, the data is collected as static html and saved into moodle, therefore not updated when the list is changed in Aspire*, negating many of the advantages of using the resource list service.
 
-*This fork aims to swap the static capture method for, at minimum, a cron updated entry.*
+*This fork aims to improve on the static capture method of the prototype*
