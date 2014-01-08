@@ -22,4 +22,4 @@ Talis have not as yet exposed a full or mature API to support this type of integ
 
 This is obviously not ideal, because it is a relatively intensive operation and, in the initial implementation at least, the data is collected as static html and saved into moodle, therefore not updated when the list is changed in Aspire*, negating many of the advantages of using the resource list service.
 
-\**This fork aims to improve on the static capture method of the prototype*
+\* *This fork aims to improve on the static capture method of the prototype*
