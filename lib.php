@@ -386,3 +386,5 @@ function aspire_extend_navigation(navigation_node $navref, stdclass $course, std
  */
 function aspire_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $aspirenode=null) {
 }
+
+
