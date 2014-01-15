@@ -16,22 +16,73 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Library of functions and constants for module readinglist
+ * This is a one-line short description of the file
+ *
+ * You can have a rather longer description of the file as well,
+ * if you like, and it can span multiple lines.
  *
  * @package    mod
- * @subpackage readinglist
- * @copyright  2003 onwards Martin Dougiamas  {@link http://moodle.com}
+ * @subpackage aspire
+ * @copyright  2011 Your Name
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once("../../config.php");
-require_once("lib.php");
+/// Replace aspire with the name of your module and remove this line
 
-$id = required_param('id',PARAM_INT);   // course
+require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
+require_once(dirname(__FILE__).'/lib.php');
 
-$PAGE->set_url('/mod/readinglist/index.php', array('id'=>$id));
+$id = required_param('id', PARAM_INT);   // course
 
-redirect("$CFG->wwwroot/course/view.php?id=$id");
+$course = $DB->get_record('course', array('id' => $id), '*', MUST_EXIST);
 
-    global $tombola;
-    $tombola[] = 'hello world';
+require_course_login($course);
+
+add_to_log($course->id, 'aspire', 'view all', 'index.php?id='.$course->id, '');
+
+$coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
+
+$PAGE->set_url('/mod/aspire/index.php', array('id' => $id));
+$PAGE->set_title(format_string($course->fullname));
+$PAGE->set_heading(format_string($course->fullname));
+$PAGE->set_context($coursecontext);
+
+echo $OUTPUT->header();
+
+if (! $aspires = get_all_instances_in_course('aspire', $course)) {
+    notice(get_string('noaspires', 'aspire'), new moodle_url('/course/view.php', array('id' => $course->id)));
+}
+
+if ($course->format == 'weeks') {
+    $table->head  = array(get_string('week'), get_string('name'));
+    $table->align = array('center', 'left');
+} else if ($course->format == 'topics') {
+    $table->head  = array(get_string('topic'), get_string('name'));
+    $table->align = array('center', 'left', 'left', 'left');
+} else {
+    $table->head  = array(get_string('name'));
+    $table->align = array('left', 'left', 'left');
+}
+
+foreach ($aspires as $aspire) {
+    if (!$aspire->visible) {
+        $link = html_writer::link(
+            new moodle_url('/mod/aspire.php', array('id' => $aspire->coursemodule)),
+            format_string($aspire->name, true),
+            array('class' => 'dimmed'));
+    } else {
+        $link = html_writer::link(
+            new moodle_url('/mod/aspire.php', array('id' => $aspire->coursemodule)),
+            format_string($aspire->name, true));
+    }
+
+    if ($course->format == 'weeks' or $course->format == 'topics') {
+        $table->data[] = array($aspire->section, $link);
+    } else {
+        $table->data[] = array($link);
+    }
+}
+
+echo $OUTPUT->heading(get_string('modulenameplural', 'aspire'), 2);
+echo html_writer::table($table);
+echo $OUTPUT->footer();

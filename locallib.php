@@ -16,20 +16,25 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'readinglist', language 'en', branch 'MOODLE_20_STABLE'
+ * Internal library of functions for module aspire
+ *
+ * All the aspire specific functions, needed to implement the module
+ * logic, should go here. Never include this file from your lib.php!
  *
  * @package    mod
- * @subpackage readinglist
- * @copyright  1999 onwards Martin Dougiamas  {@link http://moodle.com}
+ * @subpackage aspire
+ * @copyright  2011 Your Name
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['readinglist:addinstance'] = 'Add a new readinglist';
-$string['readinglisttext'] = 'Reading List text';
-$string['modulename'] = 'Reading List';
-$string['modulename_help'] = 'The readinglist module allows reading lists managed by the library system Talis Aspire to be added into a course';
+defined('MOODLE_INTERNAL') || die();
 
-$string['modulename_link'] = 'mod/readinglist/view';
-$string['modulenameplural'] = 'Reading Lists';
-$string['pluginadministration'] = 'Reading List administration';
-$string['pluginname'] = 'Aspire Reading Lists';
+/**
+ * Does something really useful with the passed things
+ *
+ * @param array $things
+ * @return object
+ */
+//function aspire_do_something_useful(array $things) {
+//    return new stdClass();
+//}

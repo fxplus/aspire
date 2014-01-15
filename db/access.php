@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,18 +16,41 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Capability definitions for the readinglist module.
+ * Capability definitions for the aspire module
  *
- * @package    mod_readinglist
- * @copyright  2012 The Open University
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or late
+ * The capabilities are loaded into the database table when the module is
+ * installed or updated. Whenever the capability definitions are updated,
+ * the module version number should be bumped up.
+ *
+ * The system has four possible values for a capability:
+ * CAP_ALLOW, CAP_PREVENT, CAP_PROHIBIT, and inherit (not set).
+ *
+ * It is important that capability names are unique. The naming convention
+ * for capabilities that are specific to modules and blocks is as follows:
+ *   [mod/block]/<plugin_name>:<capabilityname>
+ *
+ * component_name should be the same as the directory name of the mod or block.
+ *
+ * Core moodle capabilities are defined thus:
+ *    moodle/<capabilityclass>:<capabilityname>
+ *
+ * Examples: mod/forum:viewpost
+ *           block/recent_activity:view
+ *           moodle/site:deleteuser
+ *
+ * The variable name for the capability definitions array is $capabilities
+ *
+ * @package    mod
+ * @subpackage aspire
+ * @copyright  2011 Your Name
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = array(
 
-    'mod/readinglist:addinstance' => array(
+    'mod/aspire:addinstance' => array(
         'riskbitmask' => RISK_XSS,
 
         'captype' => 'write',
@@ -35,7 +59,55 @@ $capabilities = array(
             'editingteacher' => CAP_ALLOW,
             'manager' => CAP_ALLOW
         ),
+        'legacy' => array(
+            'guest' => CAP_ALLOW,
+            'student' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'admin' => CAP_ALLOW
+        ),
         'clonepermissionsfrom' => 'moodle/course:manageactivities'
     ),
 
+    'mod/aspire:deleteinstance' => array(
+        'riskbitmask' => RISK_XSS,
+
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_COURSE,
+        'archetypes' => array(
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
+        ),
+        'legacy' => array(
+            'guest' => CAP_ALLOW,
+            'student' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'admin' => CAP_ALLOW
+        ),
+        'clonepermissionsfrom' => 'moodle/course:manageactivities'
+    ),
+
+    'mod/aspire:view' => array(
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_MODULE,
+        'legacy' => array(
+            'guest' => CAP_ALLOW,
+            'student' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'admin' => CAP_ALLOW
+        )
+    ),
+
+    'mod/aspire:submit' => array(
+        'riskbitmask' => RISK_SPAM,
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'legacy' => array(
+            'student' => CAP_ALLOW
+        )
+    ),
+
 );
+

@@ -16,11 +16,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Definition of log events
- *
- * NOTE: this is an example how to insert log event during installation/update.
- * It is not really essential to know about it, but these logs were created as example
- * in the previous 1.9 NEWMODULE.
+ * This file replaces the legacy STATEMENTS section in db/install.xml,
+ * lib.php/modulename_install() post installation hook and partially defaults.php
  *
  * @package    mod
  * @subpackage aspire
@@ -28,13 +25,18 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+/**
+ * Post installation procedure
+ *
+ * @see upgrade_plugins_modules()
+ */
+function xmldb_aspire_install() {
+}
 
-global $DB;
-
-$logs = array(
-    array('module'=>'aspire', 'action'=>'add', 'mtable'=>'aspire', 'field'=>'name'),
-    array('module'=>'aspire', 'action'=>'update', 'mtable'=>'aspire', 'field'=>'name'),
-    array('module'=>'aspire', 'action'=>'view', 'mtable'=>'aspire', 'field'=>'name'),
-    array('module'=>'aspire', 'action'=>'view all', 'mtable'=>'aspire', 'field'=>'name')
-);
+/**
+ * Post installation recovery procedure
+ *
+ * @see upgrade_plugins_modules()
+ */
+function xmldb_aspire_install_recovery() {
+}

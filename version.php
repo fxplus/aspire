@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -14,18 +15,23 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+
 /**
- * Label module version info
+ * Defines the version of aspire
+ *
+ * This code fragment is called by moodle_needs_upgrading() and
+ * /admin/index.php
  *
  * @package    mod
- * @subpackage readinglist
- * @copyright  2003 onwards Martin Dougiamas  {@link http://moodle.com}
+ * @subpackage aspire
+ * @copyright  2011 Your Name
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$module->version   = 2013011000;       // The current module version (Date: YYYYMMDDXX)
-$module->requires  = 2012112900;    // Requires this Moodle version
-$module->component = 'mod_readinglist'; // Full name of the plugin (used for diagnostics)
-$module->cron      = 0;
+$module->version   = 0;               // If version == 0 then module will not be installed
+$module->version   = 2014140108;      // The current module version (Date: YYYYMMDDXX)
+$module->requires  = 2010031900;      // Requires this Moodle version
+$module->cron      = 0;               // Period for cron to check this module (secs)
+$module->component = 'mod_aspire'; // To check on upgrade, that module sits in correct place

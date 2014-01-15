@@ -15,26 +15,27 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+
 /**
- * Definition of log events
+ * English strings for aspire
  *
- * NOTE: this is an example how to insert log event during installation/update.
- * It is not really essential to know about it, but these logs were created as example
- * in the previous 1.9 NEWMODULE.
+ * You can have a rather longer description of the file as well,
+ * if you like, and it can span multiple lines.
  *
  * @package    mod
  * @subpackage aspire
- * @copyright  2011 Your Name <your@email.adress>
+ * @copyright  2011 Your Name
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-global $DB;
-
-$logs = array(
-    array('module'=>'aspire', 'action'=>'add', 'mtable'=>'aspire', 'field'=>'name'),
-    array('module'=>'aspire', 'action'=>'update', 'mtable'=>'aspire', 'field'=>'name'),
-    array('module'=>'aspire', 'action'=>'view', 'mtable'=>'aspire', 'field'=>'name'),
-    array('module'=>'aspire', 'action'=>'view all', 'mtable'=>'aspire', 'field'=>'name')
-);
+$string['modulename'] = 'Reading List';
+$string['modulenameplural'] = 'Reading Lists';
+$string['modulename_help'] = 'Use the aspire module for... | The aspire module allows...';
+$string['aspirefieldset'] = 'Reading List Selection';
+$string['aspirename'] = 'Reading List';
+$string['aspirename_help'] = 'Reading Lists can be added from the Library\'s *Aspire* Reading List system.';
+$string['aspire'] = 'Reading List';
+$string['pluginadministration'] = 'Aspire administration';
+$string['pluginname'] = 'aspire';

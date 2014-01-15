@@ -16,206 +16,373 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Library of functions and constants for module readinglist
+ * Library of interface functions and constants for module aspire
+ *
+ * All the core Moodle functions, neeeded to allow the module to work
+ * integrated in Moodle should be placed here.
+ * All the aspire specific functions, needed to implement all the module
+ * logic, should go to locallib.php. This will help to save some memory when
+ * Moodle is performing actions across all modules.
  *
  * @package    mod
- * @subpackage readinglist
- * @copyright  1999 onwards Martin Dougiamas  {@link http://moodle.com}
+ * @subpackage aspire
+ * @copyright  2011 Your Name
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+defined('MOODLE_INTERNAL') || die();
 
-/** LABEL_MAX_NAME_LENGTH = 50 */
-define("READINGLIST_MAX_NAME_LENGTH", 50);
+/** example constant */
+//define('NEWMODULE_ULTIMATE_ANSWER', 42);
+
+////////////////////////////////////////////////////////////////////////////////
+// Moodle core API                                                            //
+////////////////////////////////////////////////////////////////////////////////
 
 /**
- * @uses LABEL_MAX_NAME_LENGTH
- * @param object $readinglist
- * @return string
+ * Returns the information on whether the module supports a feature
+ *
+ * @see plugin_supports() in lib/moodlelib.php
+ * @param string $feature FEATURE_xx constant for requested feature
+ * @return mixed true if the feature is supported, null if unknown
  */
-function get_readinglist_name($readinglist) {
-    global $tombola;
-    $tombola[] = __FUNCTION__;
-
-    $name = strip_tags(format_string($readinglist->intro,true));
-    if (textlib::strlen($name) > LABEL_MAX_NAME_LENGTH) {
-        $name = textlib::substr($name, 0, LABEL_MAX_NAME_LENGTH)."...";
+function aspire_supports($feature) {
+    switch($feature) {
+        case FEATURE_MOD_INTRO:         return true;
+        case FEATURE_SHOW_DESCRIPTION:  return true;
+        case FEATURE_NO_VIEW_LINK:      return true;
+        //case FEATURE_MOD_ARCHETYPE:     return MOD_ARCHETYPE_RESOURCE;
+        default:                        return null;
     }
-
-    if (empty($name)) {
-        // arbitrary name
-        $name = get_string('modulename','readinglist');
-    }
-
-    return $name;
 }
+
 /**
+ * Saves a new instance of the aspire into the database
+ *
  * Given an object containing all the necessary data,
  * (defined by the form in mod_form.php) this function
  * will create a new instance and return the id number
  * of the new instance.
  *
- * @global object
- * @param object $readinglist
- * @return bool|int
+ * @param object $aspire An object from the form in mod_form.php
+ * @param mod_aspire_mod_form $mform
+ * @return int The id of the newly inserted aspire record
  */
-function readinglist_add_instance($readinglist) {
+function aspire_add_instance(stdClass $aspire, mod_aspire_mod_form $mform = null) {
     global $DB;
 
-    $readinglist->name = get_readinglist_name($readinglist);
-    $readinglist->timemodified = time();
+    $aspire->timecreated = time();
 
-    return $DB->insert_record("readinglist", $readinglist);
+    # You may have to add extra stuff in here #
+
+    return $DB->insert_record('aspire', $aspire);
 }
 
 /**
+ * Updates an instance of the aspire in the database
+ *
  * Given an object containing all the necessary data,
  * (defined by the form in mod_form.php) this function
  * will update an existing instance with new data.
  *
- * @global object
- * @param object $readinglist
- * @return bool
+ * @param object $aspire An object from the form in mod_form.php
+ * @param mod_aspire_mod_form $mform
+ * @return boolean Success/Fail
  */
-function readinglist_update_instance($readinglist) {
+function aspire_update_instance(stdClass $aspire, mod_aspire_mod_form $mform = null) {
     global $DB;
 
-    $readinglist->name = get_readinglist_name($readinglist);
-    $readinglist->timemodified = time();
-    $readinglist->id = $readinglist->instance;
+    $aspire->timemodified = time();
+    $aspire->id = $aspire->instance;
 
-    return $DB->update_record("readinglist", $readinglist);
+    # You may have to add extra stuff in here #
+
+    return $DB->update_record('aspire', $aspire);
 }
 
 /**
+ * Removes an instance of the aspire from the database
+ *
  * Given an ID of an instance of this module,
  * this function will permanently delete the instance
  * and any data that depends on it.
  *
- * @global object
- * @param int $id
- * @return bool
+ * @param int $id Id of the module instance
+ * @return boolean Success/Failure
  */
-function readinglist_delete_instance($id) {
+function aspire_delete_instance($id) {
     global $DB;
 
-    if (! $readinglist = $DB->get_record("readinglist", array("id"=>$id))) {
+    if (! $aspire = $DB->get_record('aspire', array('id' => $id))) {
         return false;
     }
 
-    $result = true;
+    # Delete any dependent records here #
 
-    if (! $DB->delete_records("readinglist", array("id"=>$readinglist->id))) {
-        $result = false;
-    }
+    $DB->delete_records('aspire', array('id' => $aspire->id));
 
-    return $result;
+    return true;
 }
 
 /**
- * Given a course_module object, this function returns any
- * "extra" information that may be needed when printing
- * this activity in a course listing.
- * See get_array_of_activities() in course/lib.php
+ * Returns a small object with summary information about what a
+ * user has done with a given particular instance of this module
+ * Used for user activity reports.
+ * $return->time = the time they did it
+ * $return->info = a short text description
  *
- * @global object
- * @param object $coursemodule
- * @return cached_cm_info|null
+ * @return stdClass|null
  */
-function readinglist_get_coursemodule_info($coursemodule) {
+function aspire_user_outline($course, $user, $mod, $aspire) {
+
+    $return = new stdClass();
+    $return->time = 0;
+    $return->info = '';
+    return $return;
+}
+
+/**
+ * Prints a detailed representation of what a user has done with
+ * a given particular instance of this module, for user activity reports.
+ *
+ * @param stdClass $course the current course record
+ * @param stdClass $user the record of the user we are generating report for
+ * @param cm_info $mod course module info
+ * @param stdClass $aspire the module instance record
+ * @return void, is supposed to echp directly
+ */
+function aspire_user_complete($course, $user, $mod, $aspire) {
+}
+
+/**
+ * Given a course and a time, this module should find recent activity
+ * that has occurred in aspire activities and print it out.
+ * Return true if there was output, or false is there was none.
+ *
+ * @return boolean
+ */
+function aspire_print_recent_activity($course, $viewfullnames, $timestart) {
+    return false;  //  True if anything was printed, otherwise false
+}
+
+/**
+ * Prepares the recent activity data
+ *
+ * This callback function is supposed to populate the passed array with
+ * custom activity records. These records are then rendered into HTML via
+ * {@link aspire_print_recent_mod_activity()}.
+ *
+ * @param array $activities sequentially indexed array of objects with the 'cmid' property
+ * @param int $index the index in the $activities to use for the next record
+ * @param int $timestart append activity since this time
+ * @param int $courseid the id of the course we produce the report for
+ * @param int $cmid course module id
+ * @param int $userid check for a particular user's activity only, defaults to 0 (all users)
+ * @param int $groupid check for a particular group's activity only, defaults to 0 (all groups)
+ * @return void adds items into $activities and increases $index
+ */
+function aspire_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid, $cmid, $userid=0, $groupid=0) {
+}
+
+/**
+ * Prints single activity item prepared by {@see aspire_get_recent_mod_activity()}
+
+ * @return void
+ */
+function aspire_print_recent_mod_activity($activity, $courseid, $detail, $modnames, $viewfullnames) {
+}
+
+/**
+ * Function to be run periodically according to the moodle cron
+ * This function searches for things that need to be done, such
+ * as sending out mail, toggling flags etc ...
+ *
+ * @return boolean
+ * @todo Finish documenting this function
+ **/
+function aspire_cron () {
+    return true;
+}
+
+/**
+ * Returns an array of users who are participanting in this aspire
+ *
+ * Must return an array of users who are participants for a given instance
+ * of aspire. Must include every user involved in the instance,
+ * independient of his role (student, teacher, admin...). The returned
+ * objects must contain at least id property.
+ * See other modules as example.
+ *
+ * @param int $aspireid ID of an instance of this module
+ * @return boolean|array false if no participants, array of objects otherwise
+ */
+function aspire_get_participants($aspireid) {
+    return false;
+}
+
+/**
+ * Returns all other caps used in the module
+ *
+ * @example return array('moodle/site:accessallgroups');
+ * @return array
+ */
+function aspire_get_extra_capabilities() {
+    return array();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Gradebook API                                                              //
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Is a given scale used by the instance of aspire?
+ *
+ * This function returns if a scale is being used by one aspire
+ * if it has support for grading and scales. Commented code should be
+ * modified if necessary. See forum, glossary or journal modules
+ * as reference.
+ *
+ * @param int $aspireid ID of an instance of this module
+ * @return bool true if the scale is used by the given aspire instance
+ */
+function aspire_scale_used($aspireid, $scaleid) {
     global $DB;
 
-    global $tombola;
-    $tombola[] = __FUNCTION__;
-
-    if ($readinglist = $DB->get_record('readinglist', array('id'=>$coursemodule->instance), 'id, name, intro, introformat')) {
-        if (empty($readinglist->name)) {
-            // readinglist name missing, fix it
-            $readinglist->name = "readinglist{$readinglist->id}";
-            $DB->set_field('readinglist', 'name', $readinglist->name, array('id'=>$readinglist->id));
-        }
-        $info = new stdClass();
-        // no filtering hre because this info is cached and filtered later
-        $info->extra = format_module_intro('readinglist', $readinglist, $coursemodule->id, false);
-        $info->name  = $readinglist->name;
-        return $info;
+    /** @example */
+    if ($scaleid and $DB->record_exists('aspire', array('id' => $aspireid, 'grade' => -$scaleid))) {
+        return true;
     } else {
-        return null;
+        return false;
     }
 }
 
 /**
- * @return array
- */
-function readinglist_get_view_actions() {
-    global $tombola;
-    $tombola[] = __FUNCTION__;
-
-    return array();
-}
-
-/**
- * @return array
- */
-function readinglist_get_post_actions() {
-    global $tombola;
-    $tombola[] = __FUNCTION__;
-    return array();
-}
-
-/**
- * This function is used by the reset_course_userdata function in moodlelib.
+ * Checks if scale is being used by any instance of aspire.
  *
- * @param object $data the data submitted from the reset course.
- * @return array status array
- */
-function readinglist_reset_userdata($data) {
-    global $tombola;
-    $tombola[] = __FUNCTION__;
-    return array();
-}
-
-/**
- * Returns all other caps used in module
+ * This is used to find out if scale used anywhere.
  *
- * @return array
+ * @param $scaleid int
+ * @return boolean true if the scale is used by any aspire instance
  */
-function readinglist_get_extra_capabilities() {
-    global $tombola;
-    $tombola[] = __FUNCTION__;
-    return array('moodle/site:accessallgroups');
-}
+function aspire_scale_used_anywhere($scaleid) {
+    global $DB;
 
-/**
- * @uses FEATURE_IDNUMBER
- * @uses FEATURE_GROUPS
- * @uses FEATURE_GROUPINGS
- * @uses FEATURE_GROUPMEMBERSONLY
- * @uses FEATURE_MOD_INTRO
- * @uses FEATURE_COMPLETION_TRACKS_VIEWS
- * @uses FEATURE_GRADE_HAS_GRADE
- * @uses FEATURE_GRADE_OUTCOMES
- * @param string $feature FEATURE_xx constant for requested feature
- * @return bool|null True if module supports feature, false if not, null if doesn't know
- */
-function readinglist_supports($feature) {
-    global $tombola;
-    $tombola[] = __FUNCTION__;
-    switch($feature) {
-        case FEATURE_IDNUMBER:                return false;
-        case FEATURE_GROUPS:                  return false;
-        case FEATURE_GROUPINGS:               return false;
-        case FEATURE_GROUPMEMBERSONLY:        return true;
-        case FEATURE_MOD_INTRO:               return true;
-        case FEATURE_COMPLETION_TRACKS_VIEWS: return false;
-        case FEATURE_GRADE_HAS_GRADE:         return false;
-        case FEATURE_GRADE_OUTCOMES:          return false;
-        case FEATURE_MOD_ARCHETYPE:           return MOD_ARCHETYPE_RESOURCE;
-        case FEATURE_BACKUP_MOODLE2:          return true;
-        case FEATURE_NO_VIEW_LINK:            return true;
-
-        default: return null;
+    /** @example */
+    if ($scaleid and $DB->record_exists('aspire', array('grade' => -$scaleid))) {
+        return true;
+    } else {
+        return false;
     }
 }
 
+/**
+ * Creates or updates grade item for the give aspire instance
+ *
+ * Needed by grade_update_mod_grades() in lib/gradelib.php
+ *
+ * @param stdClass $aspire instance object with extra cmidnumber and modname property
+ * @return void
+ */
+function aspire_grade_item_update(stdClass $aspire) {
+    global $CFG;
+    require_once($CFG->libdir.'/gradelib.php');
+
+    /** @example */
+    $item = array();
+    $item['itemname'] = clean_param($aspire->name, PARAM_NOTAGS);
+    $item['gradetype'] = GRADE_TYPE_VALUE;
+    $item['grademax']  = $aspire->grade;
+    $item['grademin']  = 0;
+
+    grade_update('mod/aspire', $aspire->course, 'mod', 'aspire', $aspire->id, 0, null, $item);
+}
+
+/**
+ * Update aspire grades in the gradebook
+ *
+ * Needed by grade_update_mod_grades() in lib/gradelib.php
+ *
+ * @param stdClass $aspire instance object with extra cmidnumber and modname property
+ * @param int $userid update grade of specific user only, 0 means all participants
+ * @return void
+ */
+function aspire_update_grades(stdClass $aspire, $userid = 0) {
+    global $CFG, $DB;
+    require_once($CFG->libdir.'/gradelib.php');
+
+    /** @example */
+    $grades = array(); // populate array of grade objects indexed by userid
+
+    grade_update('mod/aspire', $aspire->course, 'mod', 'aspire', $aspire->id, 0, $grades);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// File API                                                                   //
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Returns the lists of all browsable file areas within the given module context
+ *
+ * The file area 'intro' for the activity introduction field is added automatically
+ * by {@link file_browser::get_file_info_context_module()}
+ *
+ * @param stdClass $course
+ * @param stdClass $cm
+ * @param stdClass $context
+ * @return array of [(string)filearea] => (string)description
+ */
+function aspire_get_file_areas($course, $cm, $context) {
+    return array();
+}
+
+/**
+ * Serves the files from the aspire file areas
+ *
+ * @param stdClass $course
+ * @param stdClass $cm
+ * @param stdClass $context
+ * @param string $filearea
+ * @param array $args
+ * @param bool $forcedownload
+ * @return void this should never return to the caller
+ */
+function aspire_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload) {
+    global $DB, $CFG;
+
+    if ($context->contextlevel != CONTEXT_MODULE) {
+        send_file_not_found();
+    }
+
+    require_login($course, true, $cm);
+
+    send_file_not_found();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Navigation API                                                             //
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Extends the global navigation tree by adding aspire nodes if there is a relevant content
+ *
+ * This can be called by an AJAX request so do not rely on $PAGE as it might not be set up properly.
+ *
+ * @param navigation_node $navref An object representing the navigation tree node of the aspire module instance
+ * @param stdClass $course
+ * @param stdClass $module
+ * @param cm_info $cm
+ */
+function aspire_extend_navigation(navigation_node $navref, stdclass $course, stdclass $module, cm_info $cm) {
+}
+
+/**
+ * Extends the settings navigation with the aspire settings
+ *
+ * This function is called when the context for the page is a aspire module. This is not called by AJAX
+ * so it is safe to rely on the $PAGE.
+ *
+ * @param settings_navigation $settingsnav {@link settings_navigation}
+ * @param navigation_node $aspirenode {@link navigation_node}
+ */
+function aspire_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $aspirenode=null) {
+}
