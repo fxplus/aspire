@@ -39,3 +39,4 @@ $string['aspirename_help'] = 'Reading Lists can be added from the Library\'s *As
 $string['aspire'] = 'Reading List';
 $string['pluginadministration'] = 'Aspire administration';
 $string['pluginname'] = 'aspire';
+$string['noaspires'] = 'Sorry, there are no reading lists associated with this module';
