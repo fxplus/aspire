@@ -30,8 +30,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['modulename'] = 'Reading List';
-$string['modulenameplural'] = 'Reading Lists';
+$string['modulename'] = 'Aspire Reading List';
+$string['modulenameplural'] = 'Aspire Reading Lists';
 $string['modulename_help'] = 'Use the aspire module for... | The aspire module allows...';
 $string['aspirefieldset'] = 'Reading List Selection';
 $string['aspirename'] = 'Reading List';

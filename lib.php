@@ -51,6 +51,7 @@ function aspire_supports($feature) {
         case FEATURE_MOD_INTRO:         return true;
         case FEATURE_SHOW_DESCRIPTION:  return true;
         case FEATURE_NO_VIEW_LINK:      return true;
+        case FEATURE_MOD_INTRO:               return true;
         //case FEATURE_MOD_ARCHETYPE:     return MOD_ARCHETYPE_RESOURCE;
         default:                        return null;
     }
@@ -72,6 +73,10 @@ function aspire_add_instance(stdClass $aspire, mod_aspire_mod_form $mform = null
     global $DB;
 
     $aspire->timecreated = time();
+    $aspire->name = 'bob';
+
+    require_once ('../krumo/class.krumo.php'); // DEBUGGING
+    debugging(krumo($aspire->rl_section)); // DEBUGGING
 
     # You may have to add extra stuff in here #
 
@@ -94,6 +99,12 @@ function aspire_update_instance(stdClass $aspire, mod_aspire_mod_form $mform = n
 
     $aspire->timemodified = time();
     $aspire->id = $aspire->instance;
+    $aspire->name = 'bob';
+
+    require_once ('../krumo/class.krumo.php'); // DEBUGGING
+    debugging(krumo($aspire->rl_section)); // DEBUGGING
+
+
 
     # You may have to add extra stuff in here #
 

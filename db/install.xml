@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/aspire/db" VERSION="20140114" COMMENT="XMLDB file for Moodle mod/aspire"
+<XMLDB PATH="mod/aspire/db" VERSION="20140116" COMMENT="XMLDB file for Moodle mod/aspire"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -12,7 +12,9 @@
         <FIELD NAME="intro" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="General introduction of the aspire activity" PREVIOUS="name" NEXT="introformat"/>
         <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the intro field (MOODLE, HTML, MARKDOWN...)" PREVIOUS="intro" NEXT="timecreated"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="introformat" NEXT="timemodified"/>
-        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timecreated"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timecreated" NEXT="module_id"/>
+        <FIELD NAME="module_id" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="module_id as held by talis aspire. allows moodle and aspire to go out of sync until update" PREVIOUS="timemodified" NEXT="rl_section"/>
+        <FIELD NAME="rl_section" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="reading list section id (from html&amp;gt;toc) eg 'week 1' or 'required readings'" PREVIOUS="module_id"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
