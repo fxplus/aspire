@@ -130,27 +130,39 @@ function aspire_setup_elements(&$mform){
         //echo $readinglist_url."<br />";
 
         libxml_use_internal_errors(true); // http://goo.gl/AJhz2
-        $doc = DOMDocument::loadHTMLFile($readinglist_url);
+
+        $doc = new DOMDocument;
+        $doc->loadHTMLFile($readinglist_url);
         $toc = $doc->getElementById("toc");
         $links = $toc->getElementsByTagName("a");
+
+        require_once ('../krumo/class.krumo.php'); // DEBUGGING
+        debugging(krumo($readinglist_url)); // DEBUGGING
+
         $list = "<ul id='reading_items'>";
+
         foreach ($links as $link) {
-            $href =  $link->getAttribute("href");
-            //$themedebug['hrefs'][] = $href;
-            $name = $link->nodeValue;
-            //$themedebug['names'][] = $name;
-            $listId = str_replace('#','',$href);
+            $href =  $link->getAttribute("href"); // get anchor # for reading list section
+
+            $name = $link->nodeValue; // get name of reading list section
+
+            $rl_names[$name] = $href; // DEBUGGING
+
+            $listId = str_replace('#','',$href); // html name attribute
+            //$list_obj = $doc->createDocumentFragment();
+            //$list_obj->appendXML("<h3>$name</h3>"); // 
             $list_obj = $doc->getElementById($listId);
             $f = $doc->createDocumentFragment();
-            $f->appendXML('<a class="add_reading"  data-url="'.$readinglist_url.$href.'" title="add reading list to site">+ add</a>');
+            // $f->appendXML('<a class="add_reading"  data-url="'.$readinglist_url.$href.'" title="add reading list to course/module">+ ADD READING LIST</a>');
+            $f->appendXML('<a class="add_reading" data-url="'.$readinglist_url.$href.'" title="add reading list to course/module">+ ADD READING LIST</a>');
             $list_obj->appendChild($f);
-            
-            //$themedebug['list_obj'][] = $list_obj;
+
             $list .= $doc->saveHTML($list_obj);
         }
         $list .= "</ul>";
-        //$list = "aspire list goes here";
     }
+
+    debugging(krumo($rl_names)); // DEBUGGING
 
     $mform->addElement('html',
     '<div class="fitem"><a id="choose_reading_list" class="action_btn" target="_blank" >Choose a reading list</a></div><div class="fitem" id="lr_preview"></div><div class="resource_select_box">'.$list.'</div>');
