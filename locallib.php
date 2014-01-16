@@ -23,7 +23,7 @@
  *
  * @package    mod
  * @subpackage aspire
- * @copyright  2011 Your Name
+ * @copyright  2014 tombola
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -38,3 +38,87 @@ defined('MOODLE_INTERNAL') || die();
 //function aspire_do_something_useful(array $things) {
 //    return new stdClass();
 //} 
+function aspire_listurl($course_code) {
+
+    $url = "http://resourcelists.falmouth.ac.uk/modules/".$course_code."/lists.json";
+    $json = file_get_contents($url);
+    $json = json_decode($json);
+
+    foreach ($json as $listurl => $data) {
+    # we only want lists. not courses or departments
+        if (preg_match("/\/lists\//", $listurl)) {
+            $sitetype = 'modules';
+            //readinglist_url = "http://resourcelists.falmouth.ac.uk/$sitetype/$course_code.html";
+            $readinglist_url = $listurl .'.html';
+        }
+    }
+    /* this gets lists associated with courses (awards?), as well as modules
+    $url = "http://resourcelists.falmouth.ac.uk/courses/".$course_code."/lists.json";
+    $json = file_get_contents($url);
+    $json = json_decode($json);
+    foreach ($json as $listurl => $data) {
+    # we only want lists. not courses or departments
+        if (preg_match("/\/lists\//", $listurl)) {
+            $sitetype = 'courses';
+            $readinglist_url = "http://resourcelists.falmouth.ac.uk/$sitetype/$course_code/lists.html";
+            }
+    }
+    */
+    //echo $readinglist_url."<br />";
+
+    libxml_use_internal_errors(true); // http://goo.gl/AJhz2
+    return $readinglist_url;
+}
+
+function aspire_load_listhtml($course_code, $list_url = NULL) {
+    if(!$list_url) {$list_url = aspire_listurl($course_code);}
+    $doc = new DOMDocument;
+    $doc->loadHTMLFile($list_url);
+
+    return $doc; // returns DomDocument object of the html page representing a reading list
+}
+
+function aspire_get_listsections($doc) {
+
+    $toc = $doc->getElementById("toc");
+    $links = $toc->getElementsByTagName("a");
+    $list = "<ul id='reading_items'>";
+
+    foreach ($links as $link) {
+        $href =  $link->getAttribute("href"); // get anchor # for reading list section
+        $name = trim($link->nodeValue); // get name of reading list section
+        $listId = str_replace('#','',$href); // html name attribute
+        $info = $listId.'|'.$name;
+        $select_list[$info] = $name;
+    }
+    return $select_list;
+}
+
+function aspire_get_sectionhtml($course_code, $section_id, $doc = NULL) {
+    if (!$doc) {$doc = aspire_load_listhtml($course_code);}
+    $list_obj = $doc->getElementById($section_id);
+    aspire_cleanup_section($list_obj); // comment this line out if causing performance problems
+    $sectionhtml = (is_string($list_obj)) ? $list_obj : $doc->saveHTML($list_obj);
+    return $sectionhtml;
+}
+
+/* 
+ * The following two functions resolve layout issues due to the nested divs used in aspire html
+ * quite possibly overkill, and certainly not performative
+ */
+function aspire_cleanup_section(&$list_obj) {
+    // cleanup the html by picking concise fragments out of all the containers
+    $list_obj = aspire_get_html_by_class($list_obj,'sectionNote')."\n".aspire_get_html_by_class($list_obj,'span9');
+}
+
+function aspire_get_html_by_class($domelement, $classname = "span9") {
+    $doc = new DomDocument;
+    $doc->appendChild($doc->importNode($domelement, true));
+    $finder = new DomXPath($doc);
+    $nodes = $finder->query("//*[contains(@class, '$classname')]");
+    $output = new DomDocument;
+    foreach ($nodes as $node) {
+        $output->appendChild($output->importNode($node, true)); //= $node->ownerDocument->saveHTML($node);
+    }
+    return $output->saveHTML();
+}

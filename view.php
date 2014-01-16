@@ -23,7 +23,7 @@
  *
  * @package    mod
  * @subpackage aspire
- * @copyright  2011 Your Name
+ * @copyright  2014 tombola
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -39,6 +39,7 @@ if ($id) {
     $cm         = get_coursemodule_from_id('aspire', $id, 0, false, MUST_EXIST);
     $course     = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
     $aspire  = $DB->get_record('aspire', array('id' => $cm->instance), '*', MUST_EXIST);
+    
 } elseif ($n) {
     $aspire  = $DB->get_record('aspire', array('id' => $n), '*', MUST_EXIST);
     $course     = $DB->get_record('course', array('id' => $aspire->course), '*', MUST_EXIST);

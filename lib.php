@@ -50,7 +50,7 @@ function aspire_supports($feature) {
     switch($feature) {
         case FEATURE_MOD_INTRO:         return true;
         case FEATURE_SHOW_DESCRIPTION:  return true;
-        case FEATURE_NO_VIEW_LINK:      return true;
+        //case FEATURE_NO_VIEW_LINK:      return true;
         case FEATURE_MOD_INTRO:               return true;
         //case FEATURE_MOD_ARCHETYPE:     return MOD_ARCHETYPE_RESOURCE;
         default:                        return null;
@@ -71,15 +71,11 @@ function aspire_supports($feature) {
  */
 function aspire_add_instance(stdClass $aspire, mod_aspire_mod_form $mform = null) {
     global $DB;
-
     $aspire->timecreated = time();
-    $aspire->name = 'bob';
-
-    require_once ('../krumo/class.krumo.php'); // DEBUGGING
-    debugging(krumo($aspire->rl_section)); // DEBUGGING
-
+    $section_name = explode('|', $aspire->rl_section);
+    $aspire->name = $section_name[1];
+    $aspire->intro = aspire_get_sectionhtml($aspire->module_id, $section_name[0]);
     # You may have to add extra stuff in here #
-
     return $DB->insert_record('aspire', $aspire);
 }
 
@@ -96,17 +92,11 @@ function aspire_add_instance(stdClass $aspire, mod_aspire_mod_form $mform = null
  */
 function aspire_update_instance(stdClass $aspire, mod_aspire_mod_form $mform = null) {
     global $DB;
-
     $aspire->timemodified = time();
     $aspire->id = $aspire->instance;
-    $aspire->name = 'bob';
-
-    require_once ('../krumo/class.krumo.php'); // DEBUGGING
-    debugging(krumo($aspire->rl_section)); // DEBUGGING
-
-
-
-    # You may have to add extra stuff in here #
+    $section_name = explode('|', $aspire->rl_section);
+    $aspire->name = $section_name[1];
+    $aspire->intro = aspire_get_sectionhtml($aspire->module_id, $section_name[0]);
 
     return $DB->update_record('aspire', $aspire);
 }
@@ -123,13 +113,10 @@ function aspire_update_instance(stdClass $aspire, mod_aspire_mod_form $mform = n
  */
 function aspire_delete_instance($id) {
     global $DB;
-
     if (! $aspire = $DB->get_record('aspire', array('id' => $id))) {
         return false;
     }
-
     # Delete any dependent records here #
-
     $DB->delete_records('aspire', array('id' => $aspire->id));
 
     return true;
@@ -197,7 +184,6 @@ function aspire_get_recent_mod_activity(&$activities, &$index, $timestart, $cour
 
 /**
  * Prints single activity item prepared by {@see aspire_get_recent_mod_activity()}
-
  * @return void
  */
 function aspire_print_recent_mod_activity($activity, $courseid, $detail, $modnames, $viewfullnames) {
