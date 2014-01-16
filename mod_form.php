@@ -69,6 +69,9 @@ class mod_aspire_mod_form extends moodleform_mod {
         $mform->addElement('header', 'aspirefieldset', get_string('aspirefieldset', 'aspire'));
         $mform->addElement('static', 'label2', 'aspiresetting2', 'Your aspire fields go here. Replace me!');
 
+        require_once ('../krumo/class.krumo.php'); // DEBUGGING
+        debugging(krumo($mform)); // DEBUGGING
+
         aspire_setup_elements($mform);
 
         //-------------------------------------------------------------------------------
@@ -90,6 +93,16 @@ function aspire_setup_elements(&$mform){
     $mform->addElement('hidden', 'summary', '', 'id="summary"');
     $mform->addElement('hidden', 'alltext', '', 'id="alltext"');
     $mform->addElement('hidden', 'reference', '');
+
+    //$mform->addElement('hidden', 'aspire_section', 'id="aspire_section"');
+
+    $options = array(
+        'option1' => 'section1',
+        'option2' => 'section2',
+        'option3' => 'section3',
+        );
+
+    $mform->addElement('select', 'type', 'Reading List:', $options, 'id="aspire_section"');
 
     //$course_code = strtolower(substr($COURSE->idnumber,0,strpos($COURSE->idnumber,':')));
     $course_code = strtolower($COURSE->idnumber);
@@ -149,9 +162,9 @@ function aspire_setup_elements(&$mform){
             $rl_names[$name] = $href; // DEBUGGING
 
             $listId = str_replace('#','',$href); // html name attribute
-            //$list_obj = $doc->createDocumentFragment();
-            //$list_obj->appendXML("<h3>$name</h3>"); // 
-            $list_obj = $doc->getElementById($listId);
+            $list_obj = $doc->createDocumentFragment();
+            $list_obj->appendXML("<h3>$name</h3>"); // 
+            //$list_obj = $doc->getElementById($listId);
             $f = $doc->createDocumentFragment();
             // $f->appendXML('<a class="add_reading"  data-url="'.$readinglist_url.$href.'" title="add reading list to course/module">+ ADD READING LIST</a>');
             $f->appendXML('<a class="add_reading" data-url="'.$readinglist_url.$href.'" title="add reading list to course/module">+ ADD READING LIST</a>');
