@@ -16,7 +16,7 @@ All of this is a useful way of working for staff, but the default moodle integra
 
 University of Sussex created the prototype for this plugin partly as feedback to Talis and other interested parties, an alternate deeper model for integration.
 
-##Potential disadvantages
+##Potential disadvantages (technical)
 
 Talis have not as yet exposed a full API to support this type of integration. Though a json service call can be made for a set of lists associate with a module, the returned json contains a lot of unnecessary references, and the lists themselves, or the sections within the list cannot be called independently. This plugin uses a workaround, scraping the html page representing the lists to get this information from the table of contents.
 
