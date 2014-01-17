@@ -40,58 +40,67 @@ defined('MOODLE_INTERNAL') || die();
 //} 
 function aspire_listurl($course_code) {
 
-    $url = "http://resourcelists.falmouth.ac.uk/modules/".$course_code."/lists.json";
-    $json = file_get_contents($url);
-    $json = json_decode($json);
+    $url = "http://resourcelists.falmouth.ac.uk/modules/".urlencode($course_code)."/lists.json";
+    if ($json = @file_get_contents($url)){
+        $json = json_decode($json);
 
-    foreach ($json as $listurl => $data) {
-    # we only want lists. not courses or departments
-        if (preg_match("/\/lists\//", $listurl)) {
-            $sitetype = 'modules';
-            //readinglist_url = "http://resourcelists.falmouth.ac.uk/$sitetype/$course_code.html";
-            $readinglist_url = $listurl .'.html';
-        }
-    }
-    /* this gets lists associated with courses (awards?), as well as modules
-    $url = "http://resourcelists.falmouth.ac.uk/courses/".$course_code."/lists.json";
-    $json = file_get_contents($url);
-    $json = json_decode($json);
-    foreach ($json as $listurl => $data) {
-    # we only want lists. not courses or departments
-        if (preg_match("/\/lists\//", $listurl)) {
-            $sitetype = 'courses';
-            $readinglist_url = "http://resourcelists.falmouth.ac.uk/$sitetype/$course_code/lists.html";
+        foreach ($json as $listurl => $data) {
+        # we only want lists. not courses or departments
+            if (preg_match("/\/lists\//", $listurl)) {
+                $sitetype = 'modules';
+                //readinglist_url = "http://resourcelists.falmouth.ac.uk/$sitetype/$course_code.html";
+                $readinglist_url = $listurl .'.html';
             }
-    }
-    */
-    //echo $readinglist_url."<br />";
+        }
+        /* this gets lists associated with courses (awards?), as well as modules
+        $url = "http://resourcelists.falmouth.ac.uk/courses/".$course_code."/lists.json";
+        $json = file_get_contents($url);
+        $json = json_decode($json);
+        foreach ($json as $listurl => $data) {
+        # we only want lists. not courses or departments
+            if (preg_match("/\/lists\//", $listurl)) {
+                $sitetype = 'courses';
+                $readinglist_url = "http://resourcelists.falmouth.ac.uk/$sitetype/$course_code/lists.html";
+                }
+        }
+        */
+        //echo $readinglist_url."<br />";
 
-    libxml_use_internal_errors(true); // http://goo.gl/AJhz2
-    return $readinglist_url;
+        libxml_use_internal_errors(true); // http://goo.gl/AJhz2
+        return $readinglist_url;
+    } else {
+        return NULL;
+    }
 }
 
 function aspire_load_listhtml($course_code, $list_url = NULL) {
     if(!$list_url) {$list_url = aspire_listurl($course_code);}
     $doc = new DOMDocument;
-    $doc->loadHTMLFile($list_url);
-
-    return $doc; // returns DomDocument object of the html page representing a reading list
+    if (@$doc->loadHTMLFile($list_url)){
+        // return DomDocument object of the html page representing a reading list
+        return ($doc->loadHTMLFile($list_url))?  $doc :  NULL;
+    } else {
+        return NULL;
+    }
 }
 
 function aspire_get_listsections($doc) {
+    if (is_object($doc)) {
+        $toc = $doc->getElementById("toc");
+        $links = $toc->getElementsByTagName("a");
+        $list = "<ul id='reading_items'>";
 
-    $toc = $doc->getElementById("toc");
-    $links = $toc->getElementsByTagName("a");
-    $list = "<ul id='reading_items'>";
-
-    foreach ($links as $link) {
-        $href =  $link->getAttribute("href"); // get anchor # for reading list section
-        $name = trim($link->nodeValue); // get name of reading list section
-        $listId = str_replace('#','',$href); // html name attribute
-        $info = $listId.'|'.$name;
-        $select_list[$info] = $name;
+        foreach ($links as $link) {
+            $href =  $link->getAttribute("href"); // get anchor # for reading list section
+            $name = trim($link->nodeValue); // get name of reading list section
+            $listId = str_replace('#','',$href); // html name attribute
+            $info = $listId.'|'.$name;
+            $select_list[$info] = $name;
+        }
+        return $select_list;
+    } else {
+        return NULL;
     }
-    return $select_list;
 }
 
 function aspire_get_sectionhtml($course_code, $section_id, $doc = NULL) {

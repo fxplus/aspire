@@ -43,24 +43,7 @@ class mod_aspire_mod_form extends moodleform_mod {
     public function definition() {
 
         $mform = $this->_form;
-        //-------------------------------------------------------------------------------
-        // Adding the "general" fieldset, where all the common settings are showed
-        //$mform->addElement('header', 'general', get_string('general', 'form'));
-
-        // Adding the standard "name" field
-       /* $mform->addElement('text', 'name', get_string('aspirename', 'aspire'), array('size'=>'64'));
-        if (!empty($CFG->formatstringstriptags)) {
-            $mform->setType('name', PARAM_TEXT);
-        } else {
-            $mform->setType('name', PARAM_CLEAN);
-        }
-        //$mform->addRule('name', null, 'required', null, 'client');
-        $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
-        $mform->addHelpButton('name', 'aspirename', 'aspire');
-*/
-        // Adding the standard "intro" and "introformat" fields
-        //$this->add_intro_editor();
-        $mform->addElement('header', 'aspirefieldset', get_string('aspirefieldset', 'aspire'));
+        //$mform->addElement('header', 'aspirefieldset', get_string('aspirefieldset', 'aspire'));
         aspire_setup_elements($mform);
         //-------------------------------------------------------------------------------
         // add standard elements, common to all modules
@@ -78,20 +61,27 @@ function aspire_setup_elements(&$mform){
     $course_code = strtolower($COURSE->idnumber);
 
     $mform->addElement('hidden', 'summary', 'reading lists for module ', 'id="summary"');
-    $mform->addElement('hidden', 'alltext', '', 'id="alltext"');
-    $mform->addElement('hidden', 'reference', '');
-    // save course_id so that aspire url is not interrupted if course id changes in moodle
+        //$mform->addElement('hidden', 'alltext', '', 'id="alltext"');
+        //$mform->addElement('hidden', 'reference', '');
+    // save course_id so that aspire url is not interrupted if course id accidentally changed in moodle
     $mform->addElement('hidden', 'module_id', $course_code);
 
     if ($course_code == "" OR $course_code == null) {
         return false; // fallback for manual courses with no occ code
     }
     else {
-       $list_url = aspire_listurl($course_code);
-       $toc = aspire_load_listhtml($course_code, $list_url);
-       $sections = aspire_get_listsections($toc);
+        if ($list_url = aspire_listurl($course_code)){
+            $toc = aspire_load_listhtml($course_code, $list_url);
+            $sections = aspire_get_listsections($toc);
+            $mform->addElement('select', 'rl_section', 'Reading Licensest:', $sections, 'id="aspire_section"');
+            $mform->addRule('rl_section', null, 'required', null, 'client');
+        }
+        else {
+            $mform->addElement('html', '<div class="warning"><h3>No reading list was found.<h3></div>
+
+                This means that the \'course code\' designated in the course settings does not match up to a module in Talis Aspire');
+        }
     }
-    $mform->addElement('select', 'rl_section', 'Reading Licensest:', $sections, 'id="aspire_section"');
-    $mform->addRule('rl_section', null, 'required', null, 'client');
+
 }
 
