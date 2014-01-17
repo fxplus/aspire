@@ -73,7 +73,7 @@ function aspire_setup_elements(&$mform){
         if ($list_url = aspire_listurl($course_code)){
             $toc = aspire_load_listhtml($course_code, $list_url);
             $sections = aspire_get_listsections($toc);
-            $mform->addElement('select', 'rl_section', 'Reading Licensest:', $sections, 'id="aspire_section"');
+            $mform->addElement('select', 'rl_section', 'Reading List:', $sections, 'id="aspire_section"');
             $mform->addRule('rl_section', null, 'required', null, 'client');
         }
         else {
