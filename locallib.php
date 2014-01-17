@@ -41,6 +41,8 @@ defined('MOODLE_INTERNAL') || die();
 function aspire_listurl($course_code) {
 
     $url = "http://resourcelists.falmouth.ac.uk/modules/".urlencode($course_code)."/lists.json";
+    debugging('Aspire - json list url: '.$url);
+    libxml_use_internal_errors(true); // http://goo.gl/AJhz2
     if ($json = @file_get_contents($url)){
         $json = json_decode($json);
 
@@ -50,6 +52,7 @@ function aspire_listurl($course_code) {
                 $sitetype = 'modules';
                 //readinglist_url = "http://resourcelists.falmouth.ac.uk/$sitetype/$course_code.html";
                 $readinglist_url = $listurl .'.html';
+                debugging('Aspire - matched reading list urls from json: '.$readinglist_url);
             }
         }
         /* this gets lists associated with courses (awards?), as well as modules
@@ -65,8 +68,6 @@ function aspire_listurl($course_code) {
         }
         */
         //echo $readinglist_url."<br />";
-
-        libxml_use_internal_errors(true); // http://goo.gl/AJhz2
         return $readinglist_url;
     } else {
         return NULL;
