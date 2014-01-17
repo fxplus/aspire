@@ -22,4 +22,4 @@ Talis have not as yet exposed a full API to support this type of integration. Th
 
 This method is not ideal, because parsing the json and html is a relatively intensive operation and, in the initial 2.4 implementation at least, the data is collected as static html and saved into moodle, therefore not updated when the list is changed in Aspire*, negating many of the advantages of using the resource list system provided by Talis. Once Talis have extended the API to allow access to lists *and* sections via json, this plugin should be relatively easy to adapt, even in a live site.
 
-* The html is updated when the *reading list* resource is saved - in the future it will probably make use of cron to update at intervals
+\* The html is updated when the *reading list* resource is saved - in the future it will probably make use of cron to update at intervals
