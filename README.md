@@ -4,7 +4,7 @@
 
 This plugin adds an activity resource type to Moodle that allows users with the appropriate permissions to pick a reading list from the associated course in [Talis Aspire](http://talisaspire.com/) which is then displayed within the content of the course, linking each resource to it's description in Aspire.
 
-The rationale for this approach, as adopted by Sussex University E-Learning team, is summarised on their [blog](http://blogs.sussex.ac.uk/elearningteam/2013/12/10/integrating-reading-lists-talis-aspire/).
+The rationale for this approach, as adopted by Sussex University E-Learning team, is summarised on their [blog](http://blogs.sussex.ac.uk/elearningteam/2013/12/10/integrating-reading-lists-talis-aspire/) by Paolo Oprandi.
 
 The fork was created to upgrade the implementation to moodle 2.4 and refactor to allow for future API releases by Talis.
 
@@ -18,8 +18,8 @@ University of Sussex created the prototype for this plugin partly as feedback to
 
 ##Potential disadvantages
 
-Talis have not as yet exposed a full or mature API to support this type of integration. For example, though a json service call can be made for a set of lists associate with a module, the lists themselves, or the sections within the list cannot be called independently. This plugin in fact works in a crude fashion, by scraping the html page representing the lists to get this information from a (hidden) table of contents.
+Talis have not as yet exposed a full API to support this type of integration. Though a json service call can be made for a set of lists associate with a module, the returned json contains a lot of unnecessary references, and the lists themselves, or the sections within the list cannot be called independently. This plugin uses a workaround, scraping the html page representing the lists to get this information from the table of contents.
 
-This is obviously not ideal, because it is a relatively intensive operation and, in the initial implementation at least, the data is collected as static html and saved into moodle, therefore not updated when the list is changed in Aspire*, negating many of the advantages of using the resource list service.
+This method is not ideal, because parsing the json and html is a relatively intensive operation and, in the initial 2.4 implementation at least, the data is collected as static html and saved into moodle, therefore not updated when the list is changed in Aspire*, negating many of the advantages of using the resource list system provided by Talis. Once Talis have extended the API to allow access to lists *and* sections via json, this plugin should be relatively easy to adapt, even in a live site.
 
-\* *This fork aims to improve on the static capture method of the prototype*
+* The html is updated when the *reading list* resource is saved - in the future it will probably make use of cron to update at intervals
