@@ -1,4 +1,4 @@
-#Talis Aspire Integration for Moodle (1.9)
+#Talis Aspire Integration for Moodle (2.4)
 
 **Original version created at the University of Sussex by [Stuart Lamour](https://github.com/stuartlamour/talisaspire)**
 
