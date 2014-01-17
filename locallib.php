@@ -139,7 +139,7 @@ function aspire_get_html_by_class($domelement, $classname = "span9") {
 function aspire_theme_readinglist($aspire) {
     $html = array();
 
-    $html[] = '<h3 classs="readinglist-title">'.$aspire->name.'</h3>';
+    $html[] = '<h3 classs="readinglist-title">Reading List: '.$aspire->name.'</h3>';
     $html[] = '<div classs="readinglist-intro">'.$aspire->explanation.'</div>';
     $html[] = '<div classs="readinglist-items">'.$aspire->html.'</div>'; // could be stored as serialised array instead?
 
