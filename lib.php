@@ -48,15 +48,37 @@ defined('MOODLE_INTERNAL') || die();
  */
 function aspire_supports($feature) {
     switch($feature) {
-        case FEATURE_MOD_INTRO:         return true;
-        case FEATURE_SHOW_DESCRIPTION:  return true;
-        //case FEATURE_NO_VIEW_LINK:      return true;
-        case FEATURE_MOD_INTRO:               return true;
-        //case FEATURE_MOD_ARCHETYPE:     return MOD_ARCHETYPE_RESOURCE;
+        case FEATURE_MOD_INTRO:         return false;
+        //case FEATURE_SHOW_DESCRIPTION:  return true;
+        case FEATURE_NO_VIEW_LINK:      return true;
+        case FEATURE_MOD_ARCHETYPE:     return MOD_ARCHETYPE_RESOURCE;
         default:                        return null;
     }
 }
 
+
+/**
+ * Given a course_module object, this function returns any
+ * "extra" information that may be needed when printing
+ * this activity in a course listing.
+ * See get_array_of_activities() in course/lib.php
+ *
+ * @global object
+ * @param object $coursemodule
+ * @return cached_cm_info|null
+ */
+function aspire_get_coursemodule_info($coursemodule) {
+    global $DB;
+    if ($aspire = $DB->get_record('aspire', array('id'=>$coursemodule->instance), 'id, name, module_id, rl_section, explanation, html')) {
+        $info = new cached_cm_info();
+        //$info->name  = $aspire->name; // FEATURE_NO_VIEW_LINK
+        require_once(dirname(__FILE__).'/locallib.php');
+        $info->content = aspire_theme_readinglist($aspire);
+        return $info;
+    } else {
+        return null;
+    }
+}
 /**
  * Saves a new instance of the aspire into the database
  *
@@ -72,9 +94,13 @@ function aspire_supports($feature) {
 function aspire_add_instance(stdClass $aspire, mod_aspire_mod_form $mform = null) {
     global $DB;
     $aspire->timecreated = time();
-    $section_name = explode('|', $aspire->rl_section);
+
+    $section_name = explode('|', $aspire->rl_section); // select list gathers both id and name
     $aspire->name = $section_name[1];
-    $aspire->intro = aspire_get_sectionhtml($aspire->module_id, $section_name[0]);
+
+    $readinglist = aspire_get_sectionhtml($aspire->module_id, $section_name[0]);
+    $aspire->html = $readinglist->html;
+    $aspire->explanation = $readinglist->explanation;
     # You may have to add extra stuff in here #
     return $DB->insert_record('aspire', $aspire);
 }
@@ -93,10 +119,14 @@ function aspire_add_instance(stdClass $aspire, mod_aspire_mod_form $mform = null
 function aspire_update_instance(stdClass $aspire, mod_aspire_mod_form $mform = null) {
     global $DB;
     $aspire->timemodified = time();
+
     $aspire->id = $aspire->instance;
-    $section_name = explode('|', $aspire->rl_section);
+    $section_name = explode('|', $aspire->rl_section); // select list gathers both id and name
     $aspire->name = $section_name[1];
-    $aspire->intro = aspire_get_sectionhtml($aspire->module_id, $section_name[0]);
+
+    $readinglist = aspire_get_sectionhtml($aspire->module_id, $section_name[0]);
+    $aspire->html = $readinglist->html;
+    $aspire->explanation = $readinglist->explanation;
 
     return $DB->update_record('aspire', $aspire);
 }

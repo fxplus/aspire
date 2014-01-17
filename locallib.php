@@ -97,18 +97,22 @@ function aspire_get_listsections($doc) {
 function aspire_get_sectionhtml($course_code, $section_id, $doc = NULL) {
     if (!$doc) {$doc = aspire_load_listhtml($course_code);}
     $list_obj = $doc->getElementById($section_id);
-    aspire_cleanup_section($list_obj); // comment this line out if causing performance problems
-    $sectionhtml = (is_string($list_obj)) ? $list_obj : $doc->saveHTML($list_obj);
-    return $sectionhtml;
+    $readinglist = aspire_cleanup_section($list_obj); // parse reading list html - performance problem?
+    // $sectionhtml = (is_string($list_obj)) ? $readinglist : $doc->saveHTML($list_obj); // legacy
+    return $readinglist;
 }
 
 /* 
  * The following two functions resolve layout issues due to the nested divs used in aspire html
  * quite possibly overkill, and certainly not performative
  */
-function aspire_cleanup_section(&$list_obj) {
+function aspire_cleanup_section($list_obj) {
     // cleanup the html by picking concise fragments out of all the containers
-    $list_obj = aspire_get_html_by_class($list_obj,'sectionNote')."\n".aspire_get_html_by_class($list_obj,'span9');
+    //$list_obj = aspire_get_html_by_class($list_obj,'sectionNote')."\n".aspire_get_html_by_class($list_obj,'span9');
+    $readinglist = new object();
+    $readinglist->explanation = aspire_get_html_by_class($list_obj,'sectionNote');
+    $readinglist->html = aspire_get_html_by_class($list_obj,'span9');
+    return $readinglist;
 }
 
 function aspire_get_html_by_class($domelement, $classname = "span9") {
@@ -121,4 +125,14 @@ function aspire_get_html_by_class($domelement, $classname = "span9") {
         $output->appendChild($output->importNode($node, true)); //= $node->ownerDocument->saveHTML($node);
     }
     return $output->saveHTML();
+}
+
+function aspire_theme_readinglist($aspire) {
+    $html = array();
+
+    $html[] = '<h3 classs="readinglist-title">'.$aspire->name.'</h3>';
+    $html[] = '<div classs="readinglist-intro">'.$aspire->explanation.'</div>';
+    $html[] = '<div classs="readinglist-items">'.$aspire->html.'</div>'; // could be stored as serialised array instead?
+
+    return implode("\n", $html);
 }

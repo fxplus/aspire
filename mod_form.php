@@ -45,10 +45,10 @@ class mod_aspire_mod_form extends moodleform_mod {
         $mform = $this->_form;
         //-------------------------------------------------------------------------------
         // Adding the "general" fieldset, where all the common settings are showed
-        $mform->addElement('header', 'general', get_string('general', 'form'));
+        //$mform->addElement('header', 'general', get_string('general', 'form'));
 
         // Adding the standard "name" field
-        $mform->addElement('text', 'name', get_string('aspirename', 'aspire'), array('size'=>'64'));
+       /* $mform->addElement('text', 'name', get_string('aspirename', 'aspire'), array('size'=>'64'));
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
         } else {
@@ -57,9 +57,9 @@ class mod_aspire_mod_form extends moodleform_mod {
         //$mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
         $mform->addHelpButton('name', 'aspirename', 'aspire');
-
+*/
         // Adding the standard "intro" and "introformat" fields
-        $this->add_intro_editor();
+        //$this->add_intro_editor();
         $mform->addElement('header', 'aspirefieldset', get_string('aspirefieldset', 'aspire'));
         aspire_setup_elements($mform);
         //-------------------------------------------------------------------------------

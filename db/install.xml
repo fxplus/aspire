@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/aspire/db" VERSION="20140116" COMMENT="XMLDB file for Moodle mod/aspire"
+<XMLDB PATH="mod/aspire/db" VERSION="20140117" COMMENT="XMLDB file for Moodle mod/aspire"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="aspire" COMMENT="aspire example plugin">
+    <TABLE NAME="aspire" COMMENT="aspire reading list plugin">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="course"/>
         <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Course aspire activity belongs to" PREVIOUS="id" NEXT="name"/>
-        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="name field for moodle instances" PREVIOUS="course" NEXT="intro"/>
-        <FIELD NAME="intro" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="General introduction of the aspire activity" PREVIOUS="name" NEXT="introformat"/>
-        <FIELD NAME="introformat" TYPE="int" LENGTH="4" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Format of the intro field (MOODLE, HTML, MARKDOWN...)" PREVIOUS="intro" NEXT="timecreated"/>
-        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="introformat" NEXT="timemodified"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="name field for moodle instances" PREVIOUS="course" NEXT="timecreated"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" PREVIOUS="name" NEXT="timemodified"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" PREVIOUS="timecreated" NEXT="module_id"/>
         <FIELD NAME="module_id" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="module_id as held by talis aspire. allows moodle and aspire to go out of sync until update" PREVIOUS="timemodified" NEXT="rl_section"/>
-        <FIELD NAME="rl_section" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="reading list section id (from html&amp;gt;toc) eg 'week 1' or 'required readings'" PREVIOUS="module_id"/>
+        <FIELD NAME="rl_section" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="reading list section id (from html&amp;gt;toc) eg 'week 1' or 'required readings'" PREVIOUS="module_id" NEXT="html"/>
+        <FIELD NAME="html" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="html rendering of the reading lists section directly from aspire" PREVIOUS="rl_section" NEXT="explanation"/>
+        <FIELD NAME="explanation" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="intro field from reading list section" PREVIOUS="html"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
