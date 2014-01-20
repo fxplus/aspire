@@ -28,6 +28,8 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
+require_once('../config.php');
+require_once('../krumo/class.krumo.php');
 
 /**
  * Does something really useful with the passed things
@@ -40,7 +42,14 @@ defined('MOODLE_INTERNAL') || die();
 //} 
 function aspire_listurl($course_code) {
 
-    $url = "http://resourcelists.falmouth.ac.uk/modules/".urlencode($course_code)."/lists.json";
+    global $CFG;
+
+    $baseurl = get_user_preferences('aspire_talisurl', $CFG->aspire_talisurl);
+    // $hierarchy = aspire_get_hierarchy();
+    // debugging(krumo($hierarchy));
+
+    $url = $baseurl."/modules/".urlencode($course_code)."/lists.json";
+
     debugging('Aspire - json list url: '.$url);
     libxml_use_internal_errors(true); // http://goo.gl/AJhz2
     if ($json = @file_get_contents($url)){
@@ -145,4 +154,12 @@ function aspire_theme_readinglist($aspire) {
     $html[] = '<div classs="readinglist-items">'.$aspire->html.'</div>'; // could be stored as serialised array instead?
 
     return implode("\n", $html);
+}
+
+function aspire_get_hierarchy() {
+    global $CFG;
+
+    $hierarchy = get_user_preferences('aspire_listentities', $CFG->aspire_listentities);
+    $hierarchy = str_replace(' ', '', $hierarchy);
+    return explode(',', $hierarchy);
 }

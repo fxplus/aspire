@@ -152,6 +152,11 @@ function aspire_delete_instance($id) {
     return true;
 }
 
+// EVERYTHING BELOW THIS LINE IS A STUB (from example mod) to allow future extension
+
+//======================================================================
+
+
 /**
  * Returns a small object with summary information about what a
  * user has done with a given particular instance of this module

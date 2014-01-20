@@ -40,3 +40,9 @@ $string['aspire'] = 'Reading List';
 $string['pluginadministration'] = 'Aspire administration';
 $string['pluginname'] = 'aspire';
 $string['noaspires'] = 'Sorry, there are no reading lists associated with this module';
+$string['talisurl'] = 'Talis Apire URL';
+$string['configtalisurl'] = 'The root url for your install of Talis Aspire 
+eg http://liblists.sussex.ac.uk';
+$string['aspire_hierarchy'] = 'Hierarchy';
+$string['config_hierarchy'] = 'Which elements of the Aspire hierarchy have reading lists associated with them?
+*Separate entity names with a comma*';
