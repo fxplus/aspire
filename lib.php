@@ -101,8 +101,10 @@ function aspire_add_instance(stdClass $aspire, mod_aspire_mod_form $mform = null
     $readinglist = aspire_get_sectionhtml($aspire->module_id, $section_name[0]);
     $aspire->html = $readinglist->html;
     $aspire->explanation = $readinglist->explanation;
-    $aspire->hash = $readinglist->hash;
+    /* if using hash to determine updated list html
+    $aspire->hash = $readinglist->hash; */
     # You may have to add extra stuff in here #
+    
     return $DB->insert_record('aspire', $aspire);
 }
 
@@ -128,6 +130,9 @@ function aspire_update_instance(stdClass $aspire, mod_aspire_mod_form $mform = n
     $readinglist = aspire_get_sectionhtml($aspire->module_id, $section_name[0]);
     $aspire->html = $readinglist->html;
     $aspire->explanation = $readinglist->explanation;
+    /* if using hash to determine updated list html
+    $aspire->hash = $readinglist->hash; */
+    # You may have to add extra stuff in here #
 
     return $DB->update_record('aspire', $aspire);
 }

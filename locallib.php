@@ -89,9 +89,15 @@ function aspire_get_listsections($doc) {
 function aspire_get_sectionhtml($course_code, $section_id, $doc = NULL) {
     if (!$doc) {$doc = aspire_load_listhtml($course_code);}
     $list_obj = $doc->getElementById($section_id);
+    // save raw section html to save as md5 hash and compare update
+    /* $list_raw = new DOMDocument;
+    $list_raw = $list_raw->appendChild($list_obj);
+    $list_raw = $list_raw->saveHTML();
+    debugging($list_raw);
+    $readinglist->hash = md5($list_raw->saveHTML());
+    debugging($readinglist->hash);*/
     // parse reading list html - performance problem?
-    $readinglist = aspire_cleanup_section($list_obj); 
-    $readinglist->hash = md5($list_obj);
+    $readinglist = aspire_cleanup_section($list_obj);    
     return $readinglist;
 }
 
