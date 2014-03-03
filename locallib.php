@@ -1,25 +1,12 @@
 <?php
 
-// This file is part of Moodle - http://moodle.org/
-//
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 /**
  * Internal library of functions for module aspire
  *
  * All the aspire specific functions, needed to implement the module
- * logic, should go here. Never include this file from your lib.php!
+ * logic, should go here. 
+ * 
+ * Never include this file from your lib.php
  *
  * @package    mod
  * @subpackage aspire
@@ -28,18 +15,14 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-// require_once('../config.php');
-// require_once('../krumo/class.krumo.php');
 
 /**
- * Does something really useful with the passed things
+ * Implements moodle hook listurl
  *
  * @param array $things
  * @return object
  */
-//function aspire_do_something_useful(array $things) {
-//    return new stdClass();
-//} 
+
 function aspire_listurl($course_code) {
 
     global $CFG;
@@ -64,19 +47,6 @@ function aspire_listurl($course_code) {
                 debugging('Aspire - matched reading list urls from json: '.$readinglist_url);
             }
         }
-        /* this gets lists associated with courses (awards?), as well as modules
-        $url = "http://resourcelists.falmouth.ac.uk/courses/".$course_code."/lists.json";
-        $json = file_get_contents($url);
-        $json = json_decode($json);
-        foreach ($json as $listurl => $data) {
-        # we only want lists. not courses or departments
-            if (preg_match("/\/lists\//", $listurl)) {
-                $sitetype = 'courses';
-                $readinglist_url = "http://resourcelists.falmouth.ac.uk/$sitetype/$course_code/lists.html";
-                }
-        }
-        */
-        //echo $readinglist_url."<br />";
         return $readinglist_url;
     } else {
         return NULL;
@@ -101,9 +71,12 @@ function aspire_get_listsections($doc) {
         $list = "<ul id='reading_items'>";
 
         foreach ($links as $link) {
-            $href =  $link->getAttribute("href"); // get anchor # for reading list section
-            $name = trim($link->nodeValue); // get name of reading list section
-            $listId = str_replace('#','',$href); // html name attribute
+            // get anchor # for reading list section
+            $href =  $link->getAttribute("href");
+            // get name of reading list section 
+            $name = trim($link->nodeValue);
+            // html name attribute
+            $listId = str_replace('#','',$href);
             $info = $listId.'|'.$name;
             $select_list[$info] = $name;
         }
@@ -116,8 +89,8 @@ function aspire_get_listsections($doc) {
 function aspire_get_sectionhtml($course_code, $section_id, $doc = NULL) {
     if (!$doc) {$doc = aspire_load_listhtml($course_code);}
     $list_obj = $doc->getElementById($section_id);
-    $readinglist = aspire_cleanup_section($list_obj); // parse reading list html - performance problem?
-    // $sectionhtml = (is_string($list_obj)) ? $readinglist : $doc->saveHTML($list_obj); // legacy
+    // parse reading list html - performance problem?
+    $readinglist = aspire_cleanup_section($list_obj); 
     return $readinglist;
 }
 
@@ -127,13 +100,13 @@ function aspire_get_sectionhtml($course_code, $section_id, $doc = NULL) {
  */
 function aspire_cleanup_section($list_obj) {
     // cleanup the html by picking concise fragments out of all the containers
-    //$list_obj = aspire_get_html_by_class($list_obj,'sectionNote')."\n".aspire_get_html_by_class($list_obj,'span9');
     $readinglist = new object();
     $readinglist->explanation = aspire_get_html_by_class($list_obj,'sectionNote');
     $readinglist->html = aspire_get_html_by_class($list_obj,'span9');
     return $readinglist;
 }
 
+// pick out simple html from aspire markup
 function aspire_get_html_by_class($domelement, $classname = "span9") {
     $doc = new DomDocument;
     $doc->appendChild($doc->importNode($domelement, true));
@@ -141,24 +114,21 @@ function aspire_get_html_by_class($domelement, $classname = "span9") {
     $nodes = $finder->query("//*[contains(@class, '$classname')]");
     $output = new DomDocument;
     foreach ($nodes as $node) {
-        $output->appendChild($output->importNode($node, true)); //= $node->ownerDocument->saveHTML($node);
+        $output->appendChild($output->importNode($node, true));
     }
     return $output->saveHTML();
 }
 
 function aspire_theme_readinglist($aspire) {
     $html = array();
-
     $html[] = '<h3 classs="readinglist-title">Reading List: '.$aspire->name.'</h3>';
     $html[] = '<div classs="readinglist-intro">'.$aspire->explanation.'</div>';
     $html[] = '<div classs="readinglist-items">'.$aspire->html.'</div>'; // could be stored as serialised array instead?
-
     return implode("\n", $html);
 }
 
 function aspire_get_hierarchy() {
     global $CFG;
-
     $hierarchy = get_user_preferences('aspire_listentities', $CFG->aspire_listentities);
     $hierarchy = str_replace(' ', '', $hierarchy);
     return explode(',', $hierarchy);

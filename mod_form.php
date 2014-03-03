@@ -1,20 +1,5 @@
 <?php
 
-// This file is part of Moodle - http://moodle.org/
-//
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 /**
  * The main aspire configuration form
  *
@@ -28,7 +13,6 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
 require_once($CFG->dirroot.'/mod/aspire/locallib.php');
 
@@ -55,19 +39,14 @@ class mod_aspire_mod_form extends moodleform_mod {
 }
 
 function aspire_setup_elements(&$mform){
-
     global $update, $CFG, $COURSE;
-    //$course_code = strtolower(substr($COURSE->idnumber,0,strpos($COURSE->idnumber,':')));
     $course_code = strtolower($COURSE->idnumber);
-
     $mform->addElement('hidden', 'summary', 'reading lists for module ', 'id="summary"');
-        //$mform->addElement('hidden', 'alltext', '', 'id="alltext"');
-        //$mform->addElement('hidden', 'reference', '');
-    // save course_id so that aspire url is not interrupted if course id accidentally changed in moodle
+    // save course_id so that aspire url is not interrupted - eg if course id mistakenly changed in moodle
     $mform->addElement('hidden', 'module_id', $course_code);
-
+    // fallback for manual courses with no code
     if ($course_code == "" OR $course_code == null) {
-        return false; // fallback for manual courses with no occ code
+        return false; 
     }
     else {
         if ($list_url = aspire_listurl($course_code)){
@@ -82,6 +61,5 @@ function aspire_setup_elements(&$mform){
                 This means that the \'course code\' designated in the course settings does not match up to a module in Talis Aspire');
         }
     }
-
 }
 
