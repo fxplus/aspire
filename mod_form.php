@@ -20,19 +20,13 @@ require_once($CFG->dirroot.'/mod/aspire/locallib.php');
  * Module instance settings form
  */
 class mod_aspire_mod_form extends moodleform_mod {
-    
-    /**
-     * Defines forms elements
-     */
+    // Defines forms elements
     public function definition() {
-
         $mform = $this->_form;
         //$mform->addElement('header', 'aspirefieldset', get_string('aspirefieldset', 'aspire'));
         aspire_setup_elements($mform);
-        //-------------------------------------------------------------------------------
         // add standard elements, common to all modules
         $this->standard_coursemodule_elements();
-        //-------------------------------------------------------------------------------
         // add standard buttons, common to all modules
         $this->add_action_buttons();
     }
