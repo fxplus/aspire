@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/aspire/db" VERSION="20140117" COMMENT="XMLDB file for Moodle mod/aspire"
+<XMLDB PATH="mod/aspire/db" VERSION="20140303" COMMENT="XMLDB file for Moodle mod/aspire"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="aspire" COMMENT="aspire reading list plugin">
+    <TABLE NAME="aspire" COMMENT="aspire reading list plugin - add md5 hash">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="course"/>
         <FIELD NAME="course" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Course aspire activity belongs to" PREVIOUS="id" NEXT="name"/>
@@ -14,7 +14,8 @@
         <FIELD NAME="module_id" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="module_id as held by talis aspire. allows moodle and aspire to go out of sync until update" PREVIOUS="timemodified" NEXT="rl_section"/>
         <FIELD NAME="rl_section" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="reading list section id (from html&amp;gt;toc) eg 'week 1' or 'required readings'" PREVIOUS="module_id" NEXT="html"/>
         <FIELD NAME="html" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="html rendering of the reading lists section directly from aspire" PREVIOUS="rl_section" NEXT="explanation"/>
-        <FIELD NAME="explanation" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="intro field from reading list section" PREVIOUS="html"/>
+        <FIELD NAME="explanation" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="intro field from reading list section" PREVIOUS="html" NEXT="hash"/>
+        <FIELD NAME="hash" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" COMMENT="md5 hash to determine if aspire html has changed" PREVIOUS="explanation"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

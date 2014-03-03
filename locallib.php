@@ -91,6 +91,7 @@ function aspire_get_sectionhtml($course_code, $section_id, $doc = NULL) {
     $list_obj = $doc->getElementById($section_id);
     // parse reading list html - performance problem?
     $readinglist = aspire_cleanup_section($list_obj); 
+    $readinglist->hash = md5($list_obj);
     return $readinglist;
 }
 
