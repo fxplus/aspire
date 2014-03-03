@@ -28,8 +28,8 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-require_once('../config.php');
-require_once('../krumo/class.krumo.php');
+// require_once('../config.php');
+// require_once('../krumo/class.krumo.php');
 
 /**
  * Does something really useful with the passed things
